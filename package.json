@@ -1,0 +1,32 @@
+{
+  "name": "typing-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf dist",
+    "dev": "export NODE_ENV=development && ./node_modules/.bin/webpack-dev-server --quiet --open --config config/webpack.config.dev.js",
+    "build": "npm run clean && export NODE_ENV=production && ./node_modules/.bin/webpack --config config/webpack.config.prod.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@intervolga/optimize-cssnano-plugin": "^1.0.6",
+    "babel-loader": "^8.2.1",
+    "css-loader": "^5.0.1",
+    "html-webpack-plugin": "^4.5.0",
+    "mini-css-extract-plugin": "^1.3.1",
+    "rimraf": "^3.0.2",
+    "style-loader": "^2.0.0"
+  },
+  "devDependencies": {
+    "webpack": "4.44.1",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.0",
+    "webpack-merge": "5.1.4"
+  }
+}
