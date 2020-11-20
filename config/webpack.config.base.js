@@ -3,9 +3,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const env = process.env.NODE_ENV;
 const isProdMode = env === 'production';
-console.log('env', env);
-console.log('here');
-console.log(isProdMode);
 
 module.exports = {
   mode: env,
@@ -14,9 +11,16 @@ module.exports = {
     app: './src/index.js' 
   },
   output: {
+    path: path.resolve(__dirname, '/dist/'),
+    publicPath: '/',
     filename: !isProdMode ? 'js/[name].js' : 'js/[name].[contenthash:8].js',
-    path: path.resolve(__dirname, '../dist'),
-    chunkFilename: !isProdMode ? `js/[name].js` : 'js/[name].[contenthash:8].js',
+    chunkFilename: !isProdMode ? 'js/[name].js' : 'js/[name].[contenthash:8].js',
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '../src'),
+    },
+    extensions: ['.mjs', '.js', '.json']
   },
   module: {
     rules: [

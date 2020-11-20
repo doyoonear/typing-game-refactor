@@ -1,5 +1,2 @@
 import Style from '../index.css';
-import {getData} from '../src/timer';
-
-console.log(getData())
-
+import { timerOn, nextTimer } from '../src/timer';

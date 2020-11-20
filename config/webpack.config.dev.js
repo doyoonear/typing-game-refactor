@@ -7,11 +7,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const devConfig = merge(baseConfig, {
   devServer: {
     contentBase: path.join(__dirname, '../dist'),
+    port: 9000,
     compress: true,
     open: true,
     hot: true,
-    host: "localhost",
-    port: 9000,
+    quiet: true,
     historyApiFallback: true,
   },
   plugins: [
