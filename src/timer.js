@@ -1,31 +1,36 @@
 const INPUT = document.querySelector('#write');
 const WORD = document.querySelector('.word');
 const TIMER = document.querySelector('.time');
+const SCORE = document.querySelector('.score');
 const START_BTN = document.querySelector('.start');
-const TEMP_BTN = document.querySelector('.temp');
-const WORD_CON = document.querySelector('.wordContainer');
-const docFrag = document.createDocumentFragment(); // fragment 생성
+
 let wordList = [];
 let randomArr = [];
-let randomNum = Math.floor(Math.random() * 12); 
+let spentSecArr = [];
+let failCount = 0;
 let intervalId = null;
+let randomNum = Math.floor(Math.random() * 12); 
 
-
-window.addEventListener('load', getData, false);
+START_BTN.addEventListener('click', toggle, false);
 INPUT.addEventListener('keyup', checkVal, false);
+window.addEventListener('DOMContentLoaded', getData, false);
+window.addEventListener('unload', endGame, false);
+window.addEventListener('beforeunload', e => {
+  e.preventDefault();
+  e.returnValue = '';
+});
 
-async function getData() {
+export async function getData() {
   let url = 'https://my-json-server.typicode.com/kakaopay-fe/resources/words';
   let response = await fetch(url);
   if (response.ok) { 
     wordList = await response.json();
-    console.log('word', wordList);
   } else {
     alert("HTTP-Error: " + response.status);
   }
 }
 
-START_BTN.onclick = function toggle() {
+export function toggle() {
   if(START_BTN.textContent === '시작') {
     return startGame();
   }
@@ -36,16 +41,37 @@ START_BTN.onclick = function toggle() {
 
 // 시작 버튼을 눌러 게임을 시작했을 때 함수. second -1씩
 export async function startGame() { 
-  await getData();
-  WORD.textContent = wordList[randomNum].text;
-  TIMER.textContent = wordList[randomNum].second;
+  let startScore = SCORE.textContent;
+  WORD.textContent = '...';
+  SCORE.textContent = startScore;
   START_BTN.textContent = '초기화';
+  await getData();
+  timerOn();
+  return nextWord();
+}
+
+export function timerOn() {
   intervalId = window.setInterval(() => {
     TIMER.textContent -= 1;
     if(Number(TIMER.textContent) === 0) {
+      failCount = failCount + 1;
+      SCORE.textContent = SCORE.textContent - 1;
       return nextWord();
     }
   }, 1000);
+}
+
+// input창을 비우고, 글자와 초를 새로운걸로 바꾼다. 사용한 인덱스는 arr에 담는다. 
+export async function nextWord() {
+  await getNum();
+  if(randomArr.length === 11) {
+    calcTime();
+    return endGame();
+  }
+  INPUT.value = '';
+  WORD.textContent = wordList[randomNum].text;
+  TIMER.textContent = wordList[randomNum].second;
+  return randomArr.push(randomNum);
 }
 
 // 버튼을 눌러 게임을 중단했을 때 실행되는 함수. 랜덤배열 초기화.
@@ -64,49 +90,66 @@ export function resetGame() {
 export function getNum() {
   randomNum = Math.floor(Math.random() * 12); 
   if(randomArr.includes(randomNum)) {
+    // console.log('random if', randomNum);
     for(let i = 0; i < wordList.length; i++) {
-      if(i !== randomNum){ 
+      if(i !== randomNum && !randomArr.includes(i)) { 
         randomNum = i; 
+        // console.log('random i', randomNum);
         return randomNum;
       }
     }
   }
   else {
+    // console.log('random final', randomNum);
     return randomNum;
   }
 }
 
-// 단어 10개 채웠는지 체크, 엔터쳤을 때 일치하는지 체크
+// 엔터쳤을 때 일치하는지 체크, 시간 체크하는 함수에 실행될때의 랜덤 숫자 전달. 
 export function checkVal(e) {
   let match = (INPUT.value.toLowerCase() === WORD.textContent.toLowerCase());
-  console.log(match);
   if(e.keyCode === 13 && match) {
-    nextWord();
+    let leftSec = TIMER.textContent;
+    return checkTime(randomNum, leftSec);
   }
   e.stopPropagation;
-  return null;
+  return null
 }
 
-// input창을 비우고, 글자와 초를 새로운걸로 바꾼다. 사용한 인덱스는 arr에 담는다. 
-export async function nextWord() {
-  await getNum();
-  if(randomArr.length <= 10) {
-    INPUT.value = '';
-    WORD.textContent = wordList[randomNum].text;
-    TIMER.textContent = wordList[randomNum].second;
-    return randomArr.push(randomNum);
-  }
-  else {
-    return endGame();
-  }
+// 엔터쳤을 때 일치하는지 체크, 시간 체크하는 함수에 실행될때의 랜덤 숫자 전달. 
+export function checkTime(index, leftSec) {
+  let spentSec = wordList[index].second - leftSec;
+  spentSecArr.push(spentSec);
+  return nextWord();
 }
+
+export function calcTime() {
+  const secSum = spentSecArr.reduce(function(acc, curr) {
+    return acc + curr;
+  })
+  
+  console.log('spentSecArr', spentSecArr);
+  console.log('secSum', secSum);
+  console.log('randomArr', randomArr);
+  console.log('randomArr.length', randomArr.length);
+  console.log('fail', failCount);
+
+  const avgtime = secSum / (randomArr.length - failCount);
+  console.log('avgtime', Math.round(avgtime));
+  return Math.round(avgtime);
+} 
 
 // 10개를 다 풀었을 때, 게임 종료 후 완료 페이지로 이동
 export function endGame() {
-  clearInterval(intervalId);
   console.log('endGame');
+  clearInterval(intervalId);
 }
 
+// function leaveGame(e) {
+//   console.log(e);
+//     e.preventDefault();
+//     e.returnValue = '';
+// }
 
 
 
