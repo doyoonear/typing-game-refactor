@@ -1,4 +1,4 @@
-import Style from '../index.css';
-global.fetch = require("node-fetch");
-import { timerOn, nextTimer } from '../src/timer';
+require('../style.css');
+import { startGame } from './main';
+import {} from './finished';
 import "regenerator-runtime/runtime";

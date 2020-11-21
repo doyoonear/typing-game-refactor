@@ -1,13 +1,15 @@
-const INPUT = document.querySelector('#write');
-const WORD = document.querySelector('.word');
+import { routes, MAIN_SCREEN, FIN_SCREEN } from './routes';
 const TIMER = document.querySelector('.time');
-const SCORE = document.querySelector('.score');
+const WORD = document.querySelector('.word');
+const INPUT = document.querySelector('.write');
 const START_BTN = document.querySelector('.start');
+let SCORE = document.querySelector('.score');
 
 let wordList = [];
 let randomArr = [];
 let spentSecArr = [];
 let failCount = 0;
+let avgTime = 0;
 let intervalId = null;
 let randomNum = Math.floor(Math.random() * 12); 
 
@@ -15,12 +17,8 @@ START_BTN.addEventListener('click', toggle, false);
 INPUT.addEventListener('keyup', checkVal, false);
 window.addEventListener('DOMContentLoaded', getData, false);
 window.addEventListener('unload', endGame, false);
-window.addEventListener('beforeunload', e => {
-  e.preventDefault();
-  e.returnValue = '';
-});
 
-export async function getData() {
+async function getData() {
   let url = 'https://my-json-server.typicode.com/kakaopay-fe/resources/words';
   let response = await fetch(url);
   if (response.ok) { 
@@ -64,7 +62,7 @@ export function timerOn() {
 // input창을 비우고, 글자와 초를 새로운걸로 바꾼다. 사용한 인덱스는 arr에 담는다. 
 export async function nextWord() {
   await getNum();
-  if(randomArr.length === 11) {
+  if(randomArr.length === 10) {
     calcTime();
     return endGame();
   }
@@ -94,13 +92,11 @@ export function getNum() {
     for(let i = 0; i < wordList.length; i++) {
       if(i !== randomNum && !randomArr.includes(i)) { 
         randomNum = i; 
-        // console.log('random i', randomNum);
         return randomNum;
       }
     }
   }
   else {
-    // console.log('random final', randomNum);
     return randomNum;
   }
 }
@@ -127,30 +123,27 @@ export function calcTime() {
   const secSum = spentSecArr.reduce(function(acc, curr) {
     return acc + curr;
   })
-  
-  console.log('spentSecArr', spentSecArr);
-  console.log('secSum', secSum);
-  console.log('randomArr', randomArr);
-  console.log('randomArr.length', randomArr.length);
-  console.log('fail', failCount);
-
-  const avgtime = secSum / (randomArr.length - failCount);
-  console.log('avgtime', Math.round(avgtime));
-  return Math.round(avgtime);
+  const time = secSum / (randomArr.length - failCount);
+  avgTime = Math.round(time);
+  return avgTime;
 } 
 
 // 10개를 다 풀었을 때, 게임 종료 후 완료 페이지로 이동
 export function endGame() {
-  console.log('endGame');
   clearInterval(intervalId);
+  START_BTN.textContent = '시작';
+  WORD.textContent = '문제 단어';
+  TIMER.textContent = 10;
+  randomArr = [];
 }
 
-// function leaveGame(e) {
-//   console.log(e);
-//     e.preventDefault();
-//     e.returnValue = '';
-// }
+const FIN_BTN = document.querySelector('.finBtn');
+FIN_BTN.addEventListener('click', push);
 
-
+function push() {
+  history.pushState({ 'finalScore': SCORE.textContent, 'finalTime': avgTime }, null, routes['finished']);
+  MAIN_SCREEN.classList.add('hidden');
+  FIN_SCREEN.classList.remove('hidden');
+}
 
 
