@@ -13,6 +13,9 @@ let avgTime = 0;
 let intervalId = null;
 let randomNum = Math.floor(Math.random() * 12); 
 
+
+
+
 START_BTN.addEventListener('click', toggle, false);
 INPUT.addEventListener('keyup', checkVal, false);
 window.addEventListener('DOMContentLoaded', getData, false);
@@ -39,9 +42,9 @@ export function toggle() {
 
 // 시작 버튼을 눌러 게임을 시작했을 때 함수. second -1씩
 export async function startGame() { 
-  let startScore = SCORE.textContent;
+  // let startScore = SCORE.textContent;
   WORD.textContent = '...';
-  SCORE.textContent = startScore;
+  // SCORE.textContent = startScore;
   START_BTN.textContent = '초기화';
   await getData();
   timerOn();
@@ -60,8 +63,8 @@ export function timerOn() {
 }
 
 // input창을 비우고, 글자와 초를 새로운걸로 바꾼다. 사용한 인덱스는 arr에 담는다. 
-export async function nextWord() {
-  await getNum();
+export function nextWord() {
+  getNum();
   if(randomArr.length === 10) {
     calcTime();
     return endGame();
@@ -81,14 +84,14 @@ export function resetGame() {
   randomArr = [];
 }
 
+// randomNum = Math.floor(Math.random() * 12); 
 
 // 0 에서 12의 랜덤 숫자를 wordList의 인덱스로 사용.
 // 사용한 인덱스를 배열에 저장, 새로만든 랜덤 숫자가 배열에 있으면,
 // 새로운 랜덤 숫자를 만들고, 중복되지 않는 숫자를 랜덤 숫자에 넣어서 
-export function getNum() {
-  randomNum = Math.floor(Math.random() * 12); 
+export function getNum(randomNum) {
+  
   if(randomArr.includes(randomNum)) {
-    // console.log('random if', randomNum);
     for(let i = 0; i < wordList.length; i++) {
       if(i !== randomNum && !randomArr.includes(i)) { 
         randomNum = i; 
@@ -103,9 +106,9 @@ export function getNum() {
 
 // 엔터쳤을 때 일치하는지 체크, 시간 체크하는 함수에 실행될때의 랜덤 숫자 전달. 
 export function checkVal(e) {
-  let match = (INPUT.value.toLowerCase() === WORD.textContent.toLowerCase());
+  const match = (INPUT.value.toLowerCase() === WORD.textContent.toLowerCase());
   if(e.keyCode === 13 && match) {
-    let leftSec = TIMER.textContent;
+    const leftSec = TIMER.textContent;
     return checkTime(randomNum, leftSec);
   }
   e.stopPropagation;
@@ -114,7 +117,7 @@ export function checkVal(e) {
 
 // 엔터쳤을 때 일치하는지 체크, 시간 체크하는 함수에 실행될때의 랜덤 숫자 전달. 
 export function checkTime(index, leftSec) {
-  let spentSec = wordList[index].second - leftSec;
+  const spentSec = wordList[index].second - leftSec;
   spentSecArr.push(spentSec);
   return nextWord();
 }
