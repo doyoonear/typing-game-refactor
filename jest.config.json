@@ -1,8 +1,11 @@
 {
   "testRegex": "((\\.|/*.)(test))\\.js?$",
   "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    },
     "transform": {
-      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
+      ".+\\.(css|style|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
     }
   }
 }

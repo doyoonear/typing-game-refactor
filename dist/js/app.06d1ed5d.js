@@ -106,11 +106,9 @@ const routes = {
 };
 // CONCATENATED MODULE: ./src/finished.js
 
-const CONSOLE_BTN = document.querySelector('.consoleBtn');
 const RESTART_BTN = document.querySelector('.restart');
 const FIN_TIME = document.querySelector('.finalTime');
 const FIN_SCORE = document.querySelector('.finalScore');
-let currUrl = document.URL;
 RESTART_BTN.addEventListener('click', restartGame);
 const locationObserver = new MutationObserver(function () {
   if (history.state !== null) {
@@ -129,9 +127,6 @@ window.onpopstate = function () {
 };
 
 function renderFinal() {
-  console.log('renderFinal');
-  console.log('finalscore', history.state.finalScore);
-  console.log('finaltime', history.state.finalTime);
   FIN_SCORE.textContent = history.state.finalScore;
   FIN_TIME.textContent = history.state.finalTime;
 }
@@ -177,7 +172,6 @@ function restartGame() {
   // 실행: 랜덤 숫자를 받아서 타이머, 제시단어 변경하는 renderNext 함수 실행
 
   async function startGame() {
-    console.log('startGame');
     await getData('https://my-json-server.typicode.com/kakaopay-fe/resources/words');
     renderBtn();
     timerOn();
