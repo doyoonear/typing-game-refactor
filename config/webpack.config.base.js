@@ -31,7 +31,22 @@ module.exports = {
       },
       {
         test: /\.(sa|sc|c)ss$/,
-        use: ['style-loader', 'css-loader'],
+        use: [
+          isProdMode
+            ? {
+                loader: MiniCssExtractPlugin.loader
+              }
+            : {
+                loader: 'style-loader'
+              },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: false,
+              importLoaders: 2
+            }
+          }
+        ]
       },
     ]
   },
