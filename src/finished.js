@@ -1,36 +1,34 @@
 import { routes, MAIN_SCREEN, FIN_SCREEN } from './routes';
 const CONSOLE_BTN = document.querySelector('.consoleBtn');
 const RESTART_BTN = document.querySelector('.restart');
-const TIMER = document.querySelector('.time');
-const SCORE = document.querySelector('.score');
-
-CONSOLE_BTN.addEventListener('click', consoleFunc);
-
-document.addEventListener('open', getPathname);
+const FIN_TIME = document.querySelector('.finalTime');
+const FIN_SCORE = document.querySelector('.finalScore');
+let currUrl = document.URL;
 
 RESTART_BTN.addEventListener('click', restartGame);
 
-// pushState가 되었을 때, (location.pathname이 바뀌면?) 
-// pathname을 파싱해서 가져오고 
-// classList 에서  pathname + Screen을 뺀다. 
+const locationObserver = new MutationObserver(function() {
+  if(history.state !== null) {
+    renderFinal();
+  }
+});
 
-function getPathname() {
-  console.log(location.pathname.slice());
-}
+locationObserver.observe(document.body, {attributes: true, childList: true, subtree: true});
 
 window.onpopstate = function() {
-  MAIN_SCREEN.classList.remove('hidden');
-  FIN_SCREEN.classList.add('hidden');
+    MAIN_SCREEN.classList.remove('hidden');
+    FIN_SCREEN.classList.add('hidden');
 };
 
-function consoleFunc() {
-  SCORE.textContent = history.state.finalScore;
-  TIMER.textContent = history.state.finalTime;
-  console.log(SCORE)
+function renderFinal() {
+    console.log('renderFinal');
+    console.log('finalscore', history.state.finalScore);
+    console.log('finaltime', history.state.finalTime);
+    FIN_SCORE.textContent = history.state.finalScore;
+    FIN_TIME.textContent = history.state.finalTime;
 }
 
-// 다시시작 버튼 누르면, 뒤로 돌아가기 popState
-// 
 function restartGame() {
-  console.log('window', window.location.pathname);
+  history.back();
+  window.location.pathname = '/';
 }
