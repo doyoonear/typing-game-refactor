@@ -3,7 +3,9 @@ const RESTART_BTN = document.querySelector('.restart');
 const FIN_TIME = document.querySelector('.finalTime');
 const FIN_SCORE = document.querySelector('.finalScore');
 
-RESTART_BTN.addEventListener('click', restartGame);
+if(RESTART_BTN) {
+  RESTART_BTN.addEventListener('click', restartGame);
+}
 
 const locationObserver = new MutationObserver(function() {
   if(history.state !== null) {

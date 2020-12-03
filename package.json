@@ -5,7 +5,7 @@
   "main": "index.js",
   "homepage": "https://doyoonear.github.io/",
   "scripts": {
-    "test": "export NODE_ENV=test && jest --config ./jest.config.json",
+    "test": "jest --coverage --config ./jest.config.json",
     "clean": "rimraf dist",
     "dev": "export NODE_ENV=development && ./node_modules/.bin/webpack-dev-server --open --config config/webpack.config.dev.js",
     "build": "npm run clean && export NODE_ENV=production && ./node_modules/.bin/webpack --config config/webpack.config.prod.js"
@@ -20,12 +20,14 @@
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
     "@intervolga/optimize-cssnano-plugin": "^1.0.6",
+    "@testing-library/jest-dom": "^5.11.6",
     "babel-loader": "^8.2.1",
     "css-loader": "^5.0.1",
     "eslint": "^7.13.0",
     "html-webpack-plugin": "^4.5.0",
     "identity-obj-proxy": "^3.0.0",
     "mini-css-extract-plugin": "^1.3.1",
+    "mutationobserver-shim": "^0.3.7",
     "package.json": "^2.0.1",
     "prettier": "^2.1.2",
     "regenerator-runtime": "^0.13.7",
